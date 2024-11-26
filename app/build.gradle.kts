@@ -1,6 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id ("kotlin-kapt")
+    id ("com.google.dagger.hilt.android")
+    id ("androidx.navigation.safeargs.kotlin")
+
 }
 //En caso de error de android studio prueba con cambiar el valor a compileSdk = 35
 android {
@@ -56,5 +60,10 @@ dependencies {
     */
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
+
+    //DaggerHilt
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-compiler:2.48")
+
 
 }
