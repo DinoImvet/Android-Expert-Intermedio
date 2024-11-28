@@ -22,13 +22,24 @@ android {
     }
 
     buildTypes {
-        release {
+        getByName("release") {
             isMinifyEnabled = false
+            isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            resValue("string", "arisname", "HoroscApp")
+
+            buildConfigField("String", "BASE_URL", "\"https://newastro.vercel.app/\"")
         }
+        getByName("debug"){
+            isDebuggable = true
+            resValue("string", "arisname", "[DEBUG] HoroscApp")
+
+            buildConfigField("String", "BASE_URL", "\"https://newastro-debug.vercel.app/\"")
+        }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -39,6 +50,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -62,8 +74,15 @@ dependencies {
     implementation(libs.navigation.ui.ktx)
 
     //DaggerHilt
-    implementation("com.google.dagger:hilt-android:2.48")
-    kapt("com.google.dagger:hilt-compiler:2.48")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+
+    //Implementamos la libreria de retrofit y la libreria de converter gson
+    implementation(libs.retrofit)
+    implementation(libs.gson)
+    implementation (libs.logging.interceptor)
+
+
 
 
 }
