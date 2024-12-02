@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!--Permisos para la camara en tiempo real, tanto trasera como frontal-->
+    <uses-feature android:name="android.hardware.camera.any" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!--Permisos para el internet-->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
