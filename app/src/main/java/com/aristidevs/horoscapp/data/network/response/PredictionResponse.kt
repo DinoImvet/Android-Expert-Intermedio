@@ -3,7 +3,7 @@ package com.aristidevs.horoscapp.data.network.response
 import com.aristidevs.horoscapp.domain.model.PredictionModel
 import com.google.gson.annotations.SerializedName
 
-
+//CTRL + SHIFT + T para crear una tabla de pruebas
 data class PredictionResponse(
     @SerializedName("date") val date: String,
     @SerializedName("horoscope") val horoscope: String,
