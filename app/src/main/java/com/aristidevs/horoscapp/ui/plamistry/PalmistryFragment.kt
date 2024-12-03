@@ -1,11 +1,16 @@
 package com.aristidevs.horoscapp.ui.plamistry
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
 import com.aristidevs.horoscapp.R
@@ -15,7 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 
 class PalmistryFragment : Fragment() {
-    companion object{
+    companion object {
         private const val CAMERA_PERMISSION = android.Manifest.permission.CAMERA
     }
 
@@ -28,8 +33,13 @@ class PalmistryFragment : Fragment() {
     ) { isGranted ->
         if (isGranted) {
             //startCamera
+            startCamera()
         } else {
-            Toast.makeText(requireContext(), "Acepta los permisos para acceder a la camara", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                requireContext(),
+                "Acepta los permisos para acceder a la camara",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -37,11 +47,41 @@ class PalmistryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (checkCameraPermission()) {
-            //TODO: Open camera
+            //startCamera
+            startCamera()
         } else {
             requestPermissionLauncher.launch(CAMERA_PERMISSION)
         }
 
+    }
+
+    private fun startCamera() {
+        /*Esto lo que nos permite que el ciclo de vida de la camara se mantenga en el fragment, con la libreria de cameraX.
+        Y si se destruye el fragment, tambien se destruye la camara.
+         */
+
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+
+
+        cameraProviderFuture.addListener({
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+
+            val preview = Preview.Builder()
+                .build()
+                .also {
+                    it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                }
+
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+            try {
+                cameraProvider.unbindAll()
+                cameraProvider.bindToLifecycle(this, cameraSelector, preview)
+            } catch (e: Exception) {
+                Log.e("aris", "Algo salio mal ${e.message}")
+            }
+
+        }, ContextCompat.getMainExecutor(requireContext()))
     }
 
     private fun checkCameraPermission(): Boolean {
